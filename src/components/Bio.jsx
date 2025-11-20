@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import djAvatar from '../assets/dj_avatar.png';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Bio() {
   const { t } = useLanguage();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   
-  // Carousel images from public/img folder
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
   const carouselImages = [
     "/img/1.jpg",
     "/img/2.jpg",
@@ -20,7 +26,7 @@ export default function Bio() {
 
   return (
     <section style={{ 
-      padding: '1rem 1rem', 
+      padding: isMobile ? '1rem 0.5rem' : '1rem 1rem', 
       maxWidth: '1200px', 
       margin: '0 auto', 
       position: 'relative', 
@@ -36,20 +42,17 @@ export default function Bio() {
         viewport={{ once: true }}
         style={{ textAlign: 'center' }}
       >
-
-
         <h2 style={{ 
           fontFamily: 'var(--font-mono)', 
           color: 'var(--accent-color)', 
           marginBottom: '1.5rem',
-          fontSize: '2rem',
+          fontSize: isMobile ? '1.5rem' : '2rem',
           textTransform: 'uppercase',
           letterSpacing: '0.1em'
         }}>
           {t('bio.title')}
         </h2>
 
-        {/* Unified Container: Image + Text (Top) / Gallery (Bottom) */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -57,7 +60,7 @@ export default function Bio() {
           transition={{ duration: 0.6 }}
           style={{ 
             background: 'rgba(0,0,0,0.6)', 
-            padding: '1.5rem', 
+            padding: isMobile ? '1rem' : '1.5rem', 
             borderRadius: '16px',
             border: '1px solid #333',
             backdropFilter: 'blur(5px)',
@@ -65,20 +68,21 @@ export default function Bio() {
             textAlign: 'left'
           }}
         >
-          {/* Top Row: Image (Left) + Text (Right) */}
           <div style={{ 
             display: 'flex', 
-            flexDirection: 'row', 
-            alignItems: 'stretch', 
-            gap: '3rem', 
-            marginBottom: '3rem'
+            flexDirection: isMobile ? 'column' : 'row', 
+            alignItems: isMobile ? 'center' : 'stretch', 
+            gap: isMobile ? '1.5rem' : '3rem', 
+            marginBottom: isMobile ? '1.5rem' : '3rem'
           }}>
-            {/* Image */}
             <div style={{
-              flex: '0 0 350px',
+              flex: isMobile ? '0 0 auto' : '0 0 350px',
+              width: isMobile ? '100%' : 'auto',
+              maxWidth: isMobile ? '300px' : 'none',
               position: 'relative',
               borderRadius: '12px',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              aspectRatio: isMobile ? '1/1' : 'auto'
             }}>
               <video 
                 src="/dj_video.webm" 
@@ -90,10 +94,9 @@ export default function Bio() {
               />
             </div>
 
-            {/* Text */}
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, textAlign: isMobile ? 'center' : 'left' }}>
               <p style={{ 
-                fontSize: '1.1rem', 
+                fontSize: isMobile ? '1rem' : '1.1rem', 
                 lineHeight: '1.8', 
                 color: '#eee', 
                 marginBottom: '1.5rem' 
@@ -101,7 +104,7 @@ export default function Bio() {
                 {t('bio.p1')}
               </p>
               <p style={{ 
-                fontSize: '1.1rem', 
+                fontSize: isMobile ? '1rem' : '1.1rem', 
                 lineHeight: '1.8', 
                 color: '#ccc',
                 marginBottom: '1.5rem'
@@ -109,7 +112,7 @@ export default function Bio() {
                 {t('bio.p2')}
               </p>
               <p style={{ 
-                fontSize: '1.1rem', 
+                fontSize: isMobile ? '1rem' : '1.1rem', 
                 lineHeight: '1.8', 
                 color: '#ccc',
                 fontWeight: 'bold'
@@ -119,7 +122,6 @@ export default function Bio() {
             </div>
           </div>
 
-          {/* Music Styles - Need for Speed Style */}
           <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
             <h3 style={{ 
               fontFamily: 'var(--font-mono)', 
@@ -133,7 +135,7 @@ export default function Bio() {
             </h3>
             <div style={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(250px, 1fr))', 
               gap: '1rem',
               maxWidth: '1000px',
               margin: '0 auto'
@@ -161,7 +163,6 @@ export default function Bio() {
                     <span style={{ color: 'var(--accent-color)', textShadow: '0 0 5px rgba(63, 174, 112, 0.5)' }}>{style.val}%</span>
                   </div>
                   
-                  {/* Bar Container */}
                   <div style={{ 
                     height: '12px', 
                     background: 'rgba(255,255,255,0.1)', 
@@ -169,7 +170,6 @@ export default function Bio() {
                     overflow: 'hidden',
                     border: '1px solid rgba(255,255,255,0.2)'
                   }}>
-                    {/* Fill */}
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${style.val}%` }}
@@ -187,7 +187,6 @@ export default function Bio() {
             </div>
           </div>
 
-          {/* Bottom: Gallery */}
           <div style={{ overflow: 'hidden', width: '100%' }}>
             <h3 style={{ 
               fontFamily: 'var(--font-mono)', 
@@ -206,7 +205,7 @@ export default function Bio() {
                 gap: '1rem',
                 width: 'max-content'
               }}
-              animate={{ x: [0, -1000] }} // Adjust based on content width, or better use percentage if possible, but px is safer for loop
+              animate={{ x: [0, -1000] }}
               transition={{
                 x: {
                   repeat: Infinity,
@@ -216,7 +215,6 @@ export default function Bio() {
                 },
               }}
             >
-              {/* Duplicate images for infinite loop effect */}
               {[...carouselImages, ...carouselImages, ...carouselImages].map((img, index) => (
                 <motion.div
                   key={index}
@@ -242,12 +240,9 @@ export default function Bio() {
               ))}
             </motion.div>
           </div>
-
         </motion.div>
-
       </motion.div>
 
-      {/* Lightbox Modal */}
       {selectedImage && (
         <motion.div
           initial={{ opacity: 0 }}
