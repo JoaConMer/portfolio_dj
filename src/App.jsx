@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import Scene3D from './components/Scene3D';
 import Hero from './components/Hero';
-import Bio from './components/Bio';
-import LatestSession from './components/LatestSession';
-import SocialEmbeds from './components/SocialEmbeds';
-import SocialHighlights from './components/SocialHighlights';
+import LoadingSpinner from './components/LoadingSpinner';
 import { motion } from 'framer-motion';
 
 import Navbar from './components/Navbar';
-
-import Contact from './components/Contact';
 import FloatingBookingBtn from './components/FloatingBookingBtn';
+
+// Lazy load heavy components
+const Bio = lazy(() => import('./components/Bio'));
+const LatestSession = lazy(() => import('./components/LatestSession'));
+const SocialEmbeds = lazy(() => import('./components/SocialEmbeds'));
+const SocialHighlights = lazy(() => import('./components/SocialHighlights'));
+const Contact = lazy(() => import('./components/Contact'));
 
 function App() {
   const [entered, setEntered] = useState(() => {
@@ -65,21 +67,35 @@ function App() {
             ← VOLVER
           </motion.button>
 
-          <div id="bio">
-            <Bio />
-          </div>
-          <div id="session">
-            <LatestSession />
-          </div>
-          <div id="highlights">
-            <SocialHighlights />
-          </div>
-          <div id="music">
-            <SocialEmbeds />
-          </div>
-          <div id="contact">
-            <Contact />
-          </div>
+          <Suspense fallback={<LoadingSpinner />}>
+            <div id="bio">
+              <Bio />
+            </div>
+          </Suspense>
+
+          <Suspense fallback={<LoadingSpinner />}>
+            <div id="session">
+              <LatestSession />
+            </div>
+          </Suspense>
+
+          <Suspense fallback={<LoadingSpinner />}>
+            <div id="highlights">
+              <SocialHighlights />
+            </div>
+          </Suspense>
+
+          <Suspense fallback={<LoadingSpinner />}>
+            <div id="music">
+              <SocialEmbeds />
+            </div>
+          </Suspense>
+
+          <Suspense fallback={<LoadingSpinner />}>
+            <div id="contact">
+              <Contact />
+            </div>
+          </Suspense>
         </div>
       )}
     </main>
@@ -87,3 +103,4 @@ function App() {
 }
 
 export default App;
+

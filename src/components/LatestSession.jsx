@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
+import LazyIframe from './LazyIframe';
 
 export default function LatestSession() {
   const { t } = useLanguage();
@@ -51,7 +52,7 @@ export default function LatestSession() {
             borderRadius: '12px',
             border: '1px solid rgba(255,255,255,0.1)'
           }}>
-            <iframe 
+            <LazyIframe
               style={{
                 position: 'absolute',
                 top: 0,
@@ -71,3 +72,4 @@ export default function LatestSession() {
     </section>
   );
 }
+

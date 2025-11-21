@@ -5,7 +5,20 @@ import * as random from 'maath/random/dist/maath-random.esm';
 
 function ParticleField(props) {
   const ref = useRef();
-  const sphere = useMemo(() => random.inSphere(new Float32Array(5000), { radius: 1.5 }), []);
+  
+  // Generate particle positions and validate to prevent NaN values
+  const sphere = useMemo(() => {
+    const positions = random.inSphere(new Float32Array(5000), { radius: 1.5 });
+    
+    // Validate and replace any NaN values with 0
+    for (let i = 0; i < positions.length; i++) {
+      if (isNaN(positions[i]) || !isFinite(positions[i])) {
+        positions[i] = 0;
+      }
+    }
+    
+    return positions;
+  }, []);
 
   useFrame((state, delta) => {
     ref.current.rotation.x -= delta / 10;
